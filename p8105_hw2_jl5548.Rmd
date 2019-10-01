@@ -27,7 +27,6 @@ MrWheel = read_excel("./data/HealthyHarborWaterWheelTotals2018-7-28.xlsx", sheet
   janitor::clean_names() %>% 
   mutate(sports_balls = as.integer(round(sports_balls)))
 ```
-(round only rounds the column to nearest integer, but the coloumn still exists as double. So we have to use "as.integer" to turn the column into integer)
 
 2. Read and clean precipitation data for 2017 and 2018. For each, omit rows without precipitation data and add a variable year. Next, combine precipitation datasets and convert month to a character variable (the variable month.name is built into R and should be useful).
 
@@ -46,8 +45,7 @@ precip_join = rbind(precip_2017, precip_2018) %>%
 
 3. Write a paragraph about these data; you are encouraged to use inline R. Be sure to note the number of observations in both resulting datasets, and give examples of key variables. For available data, what was the total precipitation in 2018? What was the median number of sports balls in a dumpster in 2017?
 
-  There are `r row(MrWheel)` observations in MrWheel dataset, and `r row(precip_join)` in precip_join dataset. 
-
+  There are `r nrow(MrWheel)` observations in MrWheel dataset, and `r nrow(precip_join)` observations in precip_join dataset. MrWheel dataset contains data of `r nrow(MrWheel)` dumpsters from `r pull(MrWheel, date)[1]` to `r pull(MrWheel, date)[nrow(MrWheel)]`. The total precipitation in 2018 is `r sum(pull(precip_2018, total))`, and the total precipitation in 2017 is `r sum(pull(precip_2017, total))`. The median number of sports balls in a dumpster in 2017 is `r median(pull(MrWheel %>% filter(year == 2017), sports_balls))`.
 
 
 ## Problem 2
@@ -73,7 +71,6 @@ snp = read_csv("./data/fivethirtyeight/snp.csv") %>%
   select(year, month, day, close) %>% 
   arrange(year, month)
 ```
-Q: use select (to organize year and month as leading columns) or something else? Is there any other function specifically changing order of columns?
 
 3. Third, tidy the unemployment data so that it can be merged with the previous datasets. This process will involve switching from “wide” to “long” format; ensuring that key variables have the same name; and ensuring that key variables take the same values.
 
@@ -95,11 +92,10 @@ unemploy = read_csv("./data/fivethirtyeight/unemployment.csv") %>%
 pols_snp = left_join(pols, snp, by = c("year", "month"))
 pols_snp_unemploy = left_join(pols_snp, unemploy, by = c("year", "month"))
 ```
-Q: shall we arrange to put the day column ahead?
 
 5. Write a short paragraph about these datasets. Explain briefly what each dataset contained, and describe the resulting dataset (e.g. give the dimension, range of years, and names of key variables).
-
-
+  
+  
 
 
 ## Problem 3
@@ -124,7 +120,7 @@ rank_olivia = baby_names %>%
     values_from = "rank", 
     id_cols = "ethnicity"
   )
-kable(rank_olivia)
+knitr::kable(rank_olivia)
 
 rank_male = baby_names %>% 
   filter(gender == "MALE", rank == 1) %>% 
@@ -134,7 +130,7 @@ rank_male = baby_names %>%
     values_from = "childs_first_name", 
     id_cols = "ethnicity"
   )
-kable(rank_male)
+knitr::kable(rank_male)
 ```
 
 3. Finally, for male, white non-hispanic children born in 2016, produce a scatter plot showing the number of children with a name (y axis) against the rank in popularity of that name (x axis).
@@ -146,5 +142,3 @@ scatter_plot = scatter %>%
   ggplot(aes(x = rank, y = count, color = "plum")) + geom_point()
 scatter_plot
 ```
-
-
